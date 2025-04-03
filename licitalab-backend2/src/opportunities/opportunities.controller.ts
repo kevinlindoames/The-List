@@ -36,8 +36,7 @@ export class OpportunitiesController {
     }
 
     @Patch(':code/follow')
-    // @UseGuards(JwtAuthGuard) // Descomentar cuando implementes autenticación
-    toggleFollow(@Param('code') code: string) {
+    async toggleFollow(@Param('code') code: string) {
         return this.opportunitiesService.toggleFollow(code);
     }
 

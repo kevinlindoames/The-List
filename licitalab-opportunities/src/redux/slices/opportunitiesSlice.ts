@@ -23,9 +23,11 @@ const initialState: OpportunityState = {
 
 export const fetchOpportunities = createAsyncThunk(
     'opportunities/fetchOpportunities',
-    async (filters: OpportunityFilters | undefined, { rejectWithValue }) => {
+    async (filters: OpportunityFilters | undefined, { getState, rejectWithValue }) => {
         try {
-            return await opportunityService.getOpportunities(filters);
+            // Obtener los filtros actuales del estado si no se proporcionan
+            const currentFilters = filters || (getState() as { opportunities: OpportunityState }).opportunities.filters;
+            return await opportunityService.getOpportunities(currentFilters);
         } catch (originalError) {
             return rejectWithValue(
                 originalError instanceof Error
@@ -38,10 +40,16 @@ export const fetchOpportunities = createAsyncThunk(
 
 export const toggleOpportunityFollow = createAsyncThunk(
     'opportunities/toggleFollow',
-    async (code: string, { dispatch, rejectWithValue }) => {
+    async (code: string, { dispatch, getState, rejectWithValue }) => {
         try {
             const updatedOpportunity = await opportunityService.toggleFollow(code);
-            dispatch(fetchOpportunities()); // Recarga las oportunidades
+
+            // Obtener los filtros actuales del estado
+            const currentFilters = (getState() as { opportunities: OpportunityState }).opportunities.filters;
+
+            // Recargar oportunidades con los filtros actuales
+            dispatch(fetchOpportunities(currentFilters));
+
             return updatedOpportunity;
         } catch (originalError) {
             return rejectWithValue(

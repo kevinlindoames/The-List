@@ -12,7 +12,13 @@ async function bootstrap() {
   app.use(
     rateLimit({
       windowMs: 15 * 60 * 1000, // 15 minutos
-      max: 100, // Límite de peticiones
+      max: () => {
+        // Puedes personalizar el límite según el tipo de solicitud
+        return 1000; // Puedes ajustar la lógica aquí
+      },
+      skipFailedRequests: true, // Ignorar solicitudes fallidas
+      standardHeaders: true, // Devolver información de límite en headers
+      legacyHeaders: false, // Deshabilitar headers legacy
     })
   );
 

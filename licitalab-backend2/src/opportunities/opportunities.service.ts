@@ -107,9 +107,7 @@ export class OpportunitiesService {
             });
 
             if (!opportunity) {
-                throw new InternalServerErrorException(
-                    `Oportunidad con código ${code} no encontrada`,
-                );
+                throw new NotFoundException(`Oportunidad con código ${code} no encontrada`);
             }
 
             return this.prisma.opportunity.update({
@@ -119,7 +117,7 @@ export class OpportunitiesService {
         } catch (error) {
             this.logger.error(`Error al cambiar seguimiento de ${code}`, error.stack);
             throw new InternalServerErrorException(
-                'No se pudo modificar el estado de seguimiento',
+                'No se pudo modificar el estado de seguimiento'
             );
         }
     }
