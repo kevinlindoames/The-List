@@ -43,7 +43,7 @@ LicitaLAB es una aplicación web para gestionar y seguir oportunidades de negoci
 ### Clonar el Repositorio
 
 ```bash
-git clone https://github.com/tu-usuario/licitalab.git
+git clone https://github.com/kevinlindoames/The-List.git
 cd licitalab
 ```
 
