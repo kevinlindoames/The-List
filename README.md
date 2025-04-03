@@ -137,11 +137,6 @@ npm run dev
 - `npm run lint`: Verificar código
 - `npm run test`: Ejecutar pruebas
 
-## Documentación Adicional
-
-- [Desafío Técnico Original](docs/desafio-tecnico.md)
-- [Diagrama de Arquitectura](docs/arquitectura.png)
-
 ## Contribución
 
 1. Haz un fork del proyecto
