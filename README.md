@@ -157,8 +157,8 @@ Distribuido bajo Licencia MIT.
 ## Contacto
 
 - Nombre del Desarrollador
-- Email: tu-email@ejemplo.com
-- Link del Proyecto: [https://github.com/tu-usuario/licitalab](https://github.com/tu-usuario/licitalab)
+- Email: kevinlindo@hotmail.com
+- Link del Proyecto: [https://github.com/kevinlindoames/The-List](https://github.com/kevinlindoames/The-List)
 
 ```
 
