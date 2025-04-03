@@ -1,0 +1,206 @@
+"use client";
+
+import React, { useState } from "react";
+import { Opportunity } from "@/types/Opportunity";
+import { Button } from "@/components/ui/button";
+
+import {
+  FileDown,
+  FileSpreadsheet,
+  File,
+  FileText,
+  ChevronDown,
+} from "lucide-react";
+import { format } from "date-fns";
+import { es } from "date-fns/locale";
+import * as XLSX from "xlsx";
+import { jsPDF } from "jspdf";
+import "jspdf-autotable";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "./ui/dropdown-menu";
+
+interface ExportDataProps {
+  opportunities: Opportunity[];
+  isLoading?: boolean;
+}
+
+export default function ExportData({
+  opportunities,
+  isLoading = false,
+}: ExportDataProps) {
+  const [exporting, setExporting] = useState<string | null>(null);
+
+  // Función para formatear la fecha
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return format(date, "dd/MM/yyyy", { locale: es });
+  };
+
+  // Preparar datos para exportación
+  const prepareData = () => {
+    return opportunities.map((opp) => ({
+      Código: opp.code,
+      Título: opp.title,
+      Tipo: opp.type === "tender" ? "Licitación" : "Compra Ágil",
+      "Fecha Publicación": formatDate(opp.publish_date),
+      "Fecha Cierre": formatDate(opp.close_date),
+      "En Seguimiento": opp.is_followed ? "Sí" : "No",
+    }));
+  };
+
+  // Exportar a Excel
+  const exportToExcel = () => {
+    try {
+      setExporting("excel");
+      const data = prepareData();
+      const ws = XLSX.utils.json_to_sheet(data);
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, "Oportunidades");
+
+      // Configurar anchos de columnas
+      const columnWidths = [
+        { wch: 12 }, // Código
+        { wch: 40 }, // Título
+        { wch: 15 }, // Tipo
+        { wch: 18 }, // Fecha Publicación
+        { wch: 18 }, // Fecha Cierre
+        { wch: 15 }, // En Seguimiento
+      ];
+      ws["!cols"] = columnWidths;
+
+      // Generar nombre de archivo
+      const fileName = `Oportunidades_${format(
+        new Date(),
+        "yyyyMMdd_HHmmss"
+      )}.xlsx`;
+
+      // Descargar archivo
+      XLSX.writeFile(wb, fileName);
+    } catch (error) {
+      console.error("Error al exportar a Excel:", error);
+    } finally {
+      setExporting(null);
+    }
+  };
+
+  // Exportar a CSV
+  const exportToCSV = () => {
+    try {
+      setExporting("csv");
+      const data = prepareData();
+      const ws = XLSX.utils.json_to_sheet(data);
+      const csv = XLSX.utils.sheet_to_csv(ws);
+
+      // Crear blob y descargar
+      const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute(
+        "download",
+        `Oportunidades_${format(new Date(), "yyyyMMdd_HHmmss")}.csv`
+      );
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } catch (error) {
+      console.error("Error al exportar a CSV:", error);
+    } finally {
+      setExporting(null);
+    }
+  };
+
+  // Exportar a PDF
+  const exportToPDF = () => {
+    try {
+      setExporting("pdf");
+      const doc = new jsPDF();
+
+      // Título
+      doc.setFontSize(18);
+      doc.text("Listado de Oportunidades", 14, 20);
+      doc.setFontSize(11);
+      doc.text(
+        `Fecha de generación: ${format(new Date(), "dd/MM/yyyy HH:mm")}`,
+        14,
+        28
+      );
+
+      // Tabla
+      const data = prepareData();
+      const columns = Object.keys(data[0]);
+      const rows = data.map((item) => Object.values(item));
+
+      // @ts-expect-error - la librería jspdf-autotable extiende jsPDF pero TypeScript no lo reconoce
+      doc.autoTable({
+        head: [columns],
+        body: rows,
+        startY: 35,
+        margin: { top: 30 },
+        styles: { overflow: "linebreak" },
+        headStyles: { fillColor: [59, 130, 246], textColor: 255 },
+        columnStyles: {
+          0: { cellWidth: 20 }, // Código
+          1: { cellWidth: "auto" }, // Título
+          2: { cellWidth: 25 }, // Tipo
+          3: { cellWidth: 25 }, // Fecha Publicación
+          4: { cellWidth: 25 }, // Fecha Cierre
+          5: { cellWidth: 25 }, // En Seguimiento
+        },
+      });
+
+      // Guardar PDF
+      doc.save(`Oportunidades_${format(new Date(), "yyyyMMdd_HHmmss")}.pdf`);
+    } catch (error) {
+      console.error("Error al exportar a PDF:", error);
+    } finally {
+      setExporting(null);
+    }
+  };
+
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button
+          variant="outline"
+          size="sm"
+          disabled={
+            isLoading || opportunities.length === 0 || exporting !== null
+          }
+          className="flex items-center gap-2"
+        >
+          {exporting ? (
+            <>
+              <div className="animate-spin w-4 h-4 border-2 border-primary border-t-transparent rounded-full"></div>
+              <span>Exportando...</span>
+            </>
+          ) : (
+            <>
+              <FileDown className="h-4 w-4" />
+              <span>Exportar</span>
+              <ChevronDown className="h-4 w-4 ml-1" />
+            </>
+          )}
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent>
+        <DropdownMenuItem onClick={exportToExcel}>
+          <FileSpreadsheet className="h-4 w-4 mr-2" />
+          <span>Exportar a Excel</span>
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={exportToCSV}>
+          <FileText className="h-4 w-4 mr-2" />
+          <span>Exportar a CSV</span>
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={exportToPDF}>
+          <File className="h-4 w-4 mr-2" />
+          <span>Exportar a PDF</span>
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+}
