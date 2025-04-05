@@ -18,7 +18,6 @@ import Image from "next/image";
 export function UserNav() {
   const { data: session, status } = useSession();
 
-  // Si el usuario no está autenticado, mostrar botón de inicio de sesión
   if (status === "unauthenticated") {
     return (
       <div className="flex items-center gap-2">
@@ -34,7 +33,6 @@ export function UserNav() {
     );
   }
 
-  // Mientras se carga, mostrar un placeholder
   if (status === "loading") {
     return <div className="h-8 w-8 rounded-full bg-muted animate-pulse"></div>;
   }

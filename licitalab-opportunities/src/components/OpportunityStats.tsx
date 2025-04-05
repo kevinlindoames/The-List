@@ -67,12 +67,10 @@ export default function OpportunityStats({
   useEffect(() => {
     if (!opportunities.length) return;
 
-    // Fecha actual y fecha límite para "próximo a cerrar" (3 días)
     const now = new Date();
     const threeDaysFromNow = new Date();
     threeDaysFromNow.setDate(now.getDate() + 3);
 
-    // Calcular estadísticas
     const followed = opportunities.filter((opp) => opp.is_followed).length;
     const closingSoon = opportunities.filter((opp) => {
       const closeDate = new Date(opp.close_date);
@@ -94,9 +92,8 @@ export default function OpportunityStats({
     });
   }, [opportunities]);
 
-  // Simular tendencias (en una app real, esto vendría de datos históricos)
   const trends = {
-    total: 12, // 12% más que el mes pasado
+    total: 12,
     followed: 5,
     closingSoon: -8,
   };

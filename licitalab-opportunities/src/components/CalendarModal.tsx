@@ -29,20 +29,17 @@ export default function CalendarModal({
   isOpen,
   onClose,
 }: CalendarModalProps) {
-  // Handler para añadir al calendario local (.ics)
   const handleAddToLocalCalendar = () => {
     createCalendarEvent(opportunity);
     onClose();
   };
 
-  // Handler para abrir Google Calendar
   const handleAddToGoogleCalendar = () => {
     const googleUrl = getGoogleCalendarUrl(opportunity);
     window.open(googleUrl, "_blank");
     onClose();
   };
 
-  // Handler para abrir Outlook Calendar
   const handleAddToOutlookCalendar = () => {
     const outlookUrl = getOutlookCalendarUrl(opportunity);
     window.open(outlookUrl, "_blank");

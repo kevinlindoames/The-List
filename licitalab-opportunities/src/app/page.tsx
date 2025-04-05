@@ -19,7 +19,6 @@ export default function HomePage() {
   );
 
   useEffect(() => {
-    // Cargar oportunidades al montar el componente
     dispatch(fetchOpportunities(filters));
   }, [dispatch, filters]);
 
@@ -56,13 +55,10 @@ export default function HomePage() {
           </div>
         </CardHeader>
         <CardContent className="pt-6">
-          {/* Panel de estadísticas */}
           <OpportunityStats opportunities={items} />
 
-          {/* Filtros de oportunidades */}
           <OpportunityFilters />
 
-          {/* Tabla de oportunidades */}
           <OpportunityTable
             opportunities={items}
             loading={status === "loading"}

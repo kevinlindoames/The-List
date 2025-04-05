@@ -36,12 +36,10 @@ export default function OpportunityTable({
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("desc");
   const [expandedRow, setExpandedRow] = useState<string | null>(null);
 
-  // Estado para el modal de calendario
   const [calendarModalOpen, setCalendarModalOpen] = useState(false);
   const [selectedOpportunity, setSelectedOpportunity] =
     useState<Opportunity | null>(null);
 
-  // Función para abrir el modal de calendario
   const handleOpenCalendarModal = (
     opportunity: Opportunity,
     e: React.MouseEvent
@@ -51,13 +49,11 @@ export default function OpportunityTable({
     setCalendarModalOpen(true);
   };
 
-  // Función para manejar el seguimiento de oportunidades
   const handleToggleFollow = (code: string, e: React.MouseEvent) => {
     e.stopPropagation();
     dispatch(toggleOpportunityFollow(code));
   };
 
-  // Función para formatear fechas
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     return new Intl.DateTimeFormat("es-ES", {
@@ -67,7 +63,6 @@ export default function OpportunityTable({
     }).format(date);
   };
 
-  // Función para calcular cuánto tiempo queda para el cierre
   const getTimeRemaining = (closeDate: string) => {
     const now = new Date();
     const close = new Date(closeDate);
@@ -81,7 +76,6 @@ export default function OpportunityTable({
     };
   };
 
-  // Función para obtener color según días restantes
   const getStatusColor = (closeDate: string) => {
     const { daysRemaining } = getTimeRemaining(closeDate);
 
@@ -91,7 +85,6 @@ export default function OpportunityTable({
     return "text-green-600 bg-green-50 border-green-200";
   };
 
-  // Función para manejar el ordenamiento
   const handleSort = (field: keyof Opportunity) => {
     if (sortField === field) {
       setSortDirection(sortDirection === "asc" ? "desc" : "asc");
@@ -101,12 +94,10 @@ export default function OpportunityTable({
     }
   };
 
-  // Función para expandir/contraer detalles de la fila
   const toggleRowExpansion = (code: string) => {
     setExpandedRow(expandedRow === code ? null : code);
   };
 
-  // Ordenar oportunidades
   const sortedOpportunities = [...opportunities].sort((a, b) => {
     if (!sortField) return 0;
 
@@ -119,13 +110,11 @@ export default function OpportunityTable({
         : fieldB.localeCompare(fieldA);
     }
 
-    // Fallback para otros tipos
     return sortDirection === "asc"
       ? String(fieldA).localeCompare(String(fieldB))
       : String(fieldB).localeCompare(String(fieldA));
   });
 
-  // Renderizar mensaje de carga
   if (loading) {
     return (
       <div className="w-full flex flex-col items-center justify-center p-12 space-y-4">
@@ -137,7 +126,6 @@ export default function OpportunityTable({
     );
   }
 
-  // Renderizar mensaje si no hay oportunidades
   if (opportunities.length === 0) {
     return (
       <div className="w-full p-10 border rounded-xl flex flex-col items-center justify-center bg-muted/20">
@@ -155,7 +143,6 @@ export default function OpportunityTable({
     );
   }
 
-  // Renderizar cabecera de tabla
   const renderSortIcon = (field: keyof Opportunity) => {
     if (sortField !== field)
       return <ChevronDown className="w-4 h-4 opacity-50" />;

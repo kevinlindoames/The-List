@@ -13,11 +13,9 @@ export default function PageTransition({ children }: PageTransitionProps) {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    // Solo activamos el componente cuando está montado en el cliente
     setMounted(true);
   }, []);
 
-  // No aplicamos ninguna animación si no estamos montados
   if (!mounted) {
     return <>{children}</>;
   }

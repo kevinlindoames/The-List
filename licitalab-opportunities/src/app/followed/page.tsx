@@ -18,7 +18,6 @@ export default function FollowedPage() {
   );
 
   useEffect(() => {
-    // Cargar oportunidades al montar el componente
     dispatch(fetchOpportunities(filters));
   }, [dispatch, filters]);
 

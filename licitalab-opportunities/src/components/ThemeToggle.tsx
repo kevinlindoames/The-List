@@ -9,13 +9,11 @@ export function ThemeToggle() {
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
 
-  // Evitar problemas de hidratación
   useEffect(() => {
     setMounted(true);
   }, []);
 
   if (!mounted) {
-    // Renderizar un botón "fantasma" mientras no esté montado
     return (
       <Button variant="ghost" size="icon" className="w-8 h-8 rounded-full">
         <span className="sr-only">Cambiar tema</span>

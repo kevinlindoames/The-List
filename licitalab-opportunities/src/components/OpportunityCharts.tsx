@@ -32,13 +32,11 @@ interface OpportunityChartsProps {
   opportunities: Opportunity[];
 }
 
-// Definir TYPE_COLORS fuera del componente para evitar re-creaciones
 const TYPE_COLORS = {
   tender: "#3b82f6",
   agile: "#10b981",
 } as const;
 
-// Tipos para los datos de los gráficos
 type MonthlyDataType = {
   month: string;
   total: number;
@@ -60,7 +58,6 @@ type StatusDistributionType = {
 export default function OpportunityCharts({
   opportunities,
 }: OpportunityChartsProps) {
-  // Estados con tipos explícitos
   const [monthlyData, setMonthlyData] = useState<MonthlyDataType[]>([]);
   const [typeDistribution, setTypeDistribution] = useState<
     TypeDistributionType[]
@@ -69,7 +66,6 @@ export default function OpportunityCharts({
     StatusDistributionType[]
   >([]);
 
-  // Procesar datos mensuales con useCallback
   const processMonthlyData = useCallback(() => {
     const endDate = new Date();
     const startDate = subMonths(endDate, 5);
@@ -106,7 +102,6 @@ export default function OpportunityCharts({
     setMonthlyData(data);
   }, [opportunities]);
 
-  // Procesar distribución por tipo
   const processTypeDistribution = useCallback(() => {
     const tenderCount = opportunities.filter(
       (opp) => opp.type === "tender"
@@ -131,7 +126,6 @@ export default function OpportunityCharts({
     setTypeDistribution(distribution);
   }, [opportunities]);
 
-  // Procesar distribución por estado
   const processStatusDistribution = useCallback(() => {
     const now = new Date();
 
@@ -155,7 +149,6 @@ export default function OpportunityCharts({
     setStatusDistribution(distribution);
   }, [opportunities]);
 
-  // Ejecutar procesamientos cuando cambien las oportunidades
   useEffect(() => {
     if (!opportunities.length) return;
 
@@ -169,7 +162,6 @@ export default function OpportunityCharts({
     processStatusDistribution,
   ]);
 
-  // Resto del componente permanece igual...
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
       {/* Tendencia mensual */}

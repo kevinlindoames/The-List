@@ -19,7 +19,6 @@ import {
 } from "@/components/ui/select";
 import { Card, CardContent } from "@/components/ui/card";
 
-// Definición constante de tipos de oportunidades
 const OPPORTUNITY_TYPES = [
   { value: "all", label: "Todos los tipos" },
   { value: "tender", label: "Licitación" },
@@ -29,18 +28,15 @@ const OPPORTUNITY_TYPES = [
 export default function OpportunityFilters() {
   const dispatch = useAppDispatch();
 
-  // Obtener los filtros actuales del estado
   const currentFilters = useAppSelector((state) => state.opportunities.filters);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
 
-  // Estado local para manejar los filtros
   const [localFilters, setLocalFilters] = useState<OpportunityFilters>({
-    type: currentFilters.type || "all", // Cambia a 'all' en lugar de ""
+    type: currentFilters.type || "all",
     startDate: currentFilters.startDate || "",
     endDate: currentFilters.endDate || "",
   });
 
-  // Efecto para sincronizar filtros globales con estado local
   useEffect(() => {
     setLocalFilters({
       type: currentFilters.type || "all",
@@ -49,55 +45,43 @@ export default function OpportunityFilters() {
     });
   }, [currentFilters]);
 
-  // Verificar si hay filtros activos
   const hasActiveFilters = Boolean(
     localFilters.type || localFilters.startDate || localFilters.endDate
   );
 
-  // Calcular cuántos filtros están activos
   const activeFilterCount = [
     localFilters.type,
     localFilters.startDate,
     localFilters.endDate,
   ].filter(Boolean).length;
 
-  // Función para manejar cambios en los filtros
   const handleFilterChange = useCallback(
     (name: string, value: string) => {
-      // Crear copia del estado actual
       const updatedFilters: OpportunityFilters = {
         ...localFilters,
         [name]: name === "type" ? (value as OpportunityType) : value,
       };
 
-      // Establecer estado local
       setLocalFilters(updatedFilters);
 
-      // Despachar filtros a Redux
       dispatch(setFilters(updatedFilters));
 
-      // Cargar oportunidades con filtros
       dispatch(fetchOpportunities(updatedFilters));
     },
     [dispatch, localFilters]
   );
 
-  // Función para restablecer filtros
   const resetFilters = useCallback(() => {
-    // Estado inicial de filtros
     const resetState: OpportunityFilters = {
-      type: "all", // Cambia a 'all'
+      type: "all",
       startDate: "",
       endDate: "",
     };
 
-    // Restablecer estado local
     setLocalFilters(resetState);
 
-    // Limpiar filtros en Redux
     dispatch(setFilters(resetState));
 
-    // Cargar todas las oportunidades
     dispatch(fetchOpportunities());
   }, [dispatch]);
 

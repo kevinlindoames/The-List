@@ -34,13 +34,11 @@ export default function ExportData({
 }: ExportDataProps) {
   const [exporting, setExporting] = useState<string | null>(null);
 
-  // Función para formatear la fecha
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     return format(date, "dd/MM/yyyy", { locale: es });
   };
 
-  // Preparar datos para exportación
   const prepareData = () => {
     return opportunities.map((opp) => ({
       Código: opp.code,
@@ -52,7 +50,6 @@ export default function ExportData({
     }));
   };
 
-  // Exportar a Excel
   const exportToExcel = () => {
     try {
       setExporting("excel");
@@ -61,24 +58,21 @@ export default function ExportData({
       const wb = XLSX.utils.book_new();
       XLSX.utils.book_append_sheet(wb, ws, "Oportunidades");
 
-      // Configurar anchos de columnas
       const columnWidths = [
-        { wch: 12 }, // Código
-        { wch: 40 }, // Título
-        { wch: 15 }, // Tipo
-        { wch: 18 }, // Fecha Publicación
-        { wch: 18 }, // Fecha Cierre
-        { wch: 15 }, // En Seguimiento
+        { wch: 12 },
+        { wch: 40 },
+        { wch: 15 },
+        { wch: 18 },
+        { wch: 18 },
+        { wch: 15 },
       ];
       ws["!cols"] = columnWidths;
 
-      // Generar nombre de archivo
       const fileName = `Oportunidades_${format(
         new Date(),
         "yyyyMMdd_HHmmss"
       )}.xlsx`;
 
-      // Descargar archivo
       XLSX.writeFile(wb, fileName);
     } catch (error) {
       console.error("Error al exportar a Excel:", error);
@@ -87,7 +81,6 @@ export default function ExportData({
     }
   };
 
-  // Exportar a CSV
   const exportToCSV = () => {
     try {
       setExporting("csv");
@@ -95,7 +88,6 @@ export default function ExportData({
       const ws = XLSX.utils.json_to_sheet(data);
       const csv = XLSX.utils.sheet_to_csv(ws);
 
-      // Crear blob y descargar
       const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
       const url = URL.createObjectURL(blob);
       const link = document.createElement("a");
@@ -114,13 +106,11 @@ export default function ExportData({
     }
   };
 
-  // Exportar a PDF
   const exportToPDF = () => {
     try {
       setExporting("pdf");
       const doc = new jsPDF();
 
-      // Título
       doc.setFontSize(18);
       doc.text("Listado de Oportunidades", 14, 20);
       doc.setFontSize(11);
@@ -130,7 +120,6 @@ export default function ExportData({
         28
       );
 
-      // Tabla
       const data = prepareData();
       const columns = Object.keys(data[0]);
       const rows = data.map((item) => Object.values(item));
@@ -144,16 +133,15 @@ export default function ExportData({
         styles: { overflow: "linebreak" },
         headStyles: { fillColor: [59, 130, 246], textColor: 255 },
         columnStyles: {
-          0: { cellWidth: 20 }, // Código
-          1: { cellWidth: "auto" }, // Título
-          2: { cellWidth: 25 }, // Tipo
-          3: { cellWidth: 25 }, // Fecha Publicación
-          4: { cellWidth: 25 }, // Fecha Cierre
-          5: { cellWidth: 25 }, // En Seguimiento
+          0: { cellWidth: 20 },
+          1: { cellWidth: "auto" },
+          2: { cellWidth: 25 },
+          3: { cellWidth: 25 },
+          4: { cellWidth: 25 },
+          5: { cellWidth: 25 },
         },
       });
 
-      // Guardar PDF
       doc.save(`Oportunidades_${format(new Date(), "yyyyMMdd_HHmmss")}.pdf`);
     } catch (error) {
       console.error("Error al exportar a PDF:", error);

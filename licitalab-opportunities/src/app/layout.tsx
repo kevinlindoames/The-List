@@ -2,7 +2,7 @@ import "./globals.css";
 import type { Metadata } from "next";
 import { ReduxProvider } from "@/redux/provider";
 import { ThemeProvider } from "@/components/ThemeProvider";
-import { ThemeToggle } from "@/components/ThemeToggle"; // Añade esta importación
+import { ThemeToggle } from "@/components/ThemeToggle";
 import AuthProvider from "@/providers/AuthProvider";
 import { UserNav } from "@/components/UserNav";
 
@@ -33,7 +33,7 @@ export default function RootLayout({
                           Plataforma de Gestión de Oportunidades
                         </p>
                         <UserNav />
-                        <ThemeToggle /> {/* Añade el componente aquí */}
+                        <ThemeToggle />
                       </div>
                     </div>
                   </div>

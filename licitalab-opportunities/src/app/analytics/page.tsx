@@ -17,7 +17,6 @@ export default function AnalyticsPage() {
   );
 
   useEffect(() => {
-    // Cargar oportunidades al montar el componente
     dispatch(fetchOpportunities(filters));
   }, [dispatch, filters]);
 
